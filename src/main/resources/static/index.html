@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLead - Admission Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="brand">EduLead</div>
+    <div class="subtitle">Admission Management</div>
+    <button class="nav active" onclick="showSection('dashboard', this)">Dashboard</button>
+    <button class="nav" onclick="showSection('leads', this)">Leads</button>
+    <button class="nav" onclick="showSection('followups', this)">Follow-ups</button>
+    <button class="nav" onclick="showSection('reports', this)">Reports</button>
+</div>
+
+<main class="main">
+    <section id="dashboardSection">
+        <div class="page-head">
+            <div>
+                <h1>Admission Dashboard</h1>
+                <p>Manage and track admission leads</p>
+            </div>
+            <button class="primary" onclick="openLeadModal()">+ Add Lead</button>
+        </div>
+
+        <div class="cards">
+            <div class="card"><span>Total Leads</span><strong id="totalLeads">0</strong></div>
+            <div class="card"><span>New Leads</span><strong id="newLeads">0</strong></div>
+            <div class="card"><span>Contacted</span><strong id="contactedLeads">0</strong></div>
+            <div class="card"><span>Converted</span><strong id="convertedLeads">0</strong></div>
+        </div>
+
+        <div class="cards small">
+            <div class="card"><span>Normal Ageing</span><strong id="normalAgeing">0</strong></div>
+            <div class="card"><span>Ageing 3–7 Days</span><strong id="ageing">0</strong></div>
+            <div class="card"><span>Attention Required</span><strong id="attentionRequired">0</strong></div>
+            <div class="card"><span>Follow-ups</span><strong id="followUpCount">0</strong></div>
+        </div>
+
+        <div class="panel">
+            <div class="section-head">
+                <div>
+                    <h2>Admission Leads</h2>
+                    <p>Track enquiries and admission progress</p>
+                </div>
+                <input id="search" placeholder="Search leads..." oninput="renderLeads()">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Phone</th><th>Course</th><th>Source</th>
+                        <th>Status</th><th>Counsellor</th><th>Age</th><th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="leadTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="leadsSection" class="hidden">
+        <div class="page-head">
+            <div><h1>Admission Leads</h1><p>Create, update and track leads</p></div>
+            <button class="primary" onclick="openLeadModal()">+ Add Lead</button>
+        </div>
+        <div class="panel">
+            <div class="section-head"><h2>All Leads</h2><input id="leadSearch" placeholder="Search..." oninput="renderLeadPage()"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Course</th><th>Source</th><th>Status</th><th>Counsellor</th><th>Age</th><th>Actions</th></tr></thead>
+                    <tbody id="leadTable2"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="followupsSection" class="hidden">
+        <div class="page-head">
+            <div><h1>Follow-ups</h1><p>Schedule and track counsellor follow-ups</p></div>
+            <button class="primary" onclick="openFollowUpModal()">+ Add Follow-up</button>
+        </div>
+        <div class="panel">
+            <div class="section-head"><h2>Follow-up Schedule</h2><input id="followSearch" placeholder="Search..." oninput="renderFollowUps()"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Lead</th><th>Date</th><th>Action</th><th>Notes</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="followUpTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="reportsSection" class="hidden">
+        <div class="page-head"><div><h1>Reports & Insights</h1><p>Admission pipeline and lead ageing overview</p></div></div>
+        <div class="report-grid">
+            <div class="panel"><h2>Pipeline</h2><div id="pipeline"></div></div>
+            <div class="panel"><h2>Lead Sources</h2><div id="sources"></div></div>
+            <div class="panel"><h2>Ageing</h2><div id="ageingReport"></div></div>
+        </div>
+    </section>
+</main>
+
+<div class="modal hidden" id="leadModal">
+    <div class="modal-box">
+        <div class="modal-head"><h2 id="leadModalTitle">Add Lead</h2><button onclick="closeLeadModal()">×</button></div>
+        <form id="leadForm">
+            <input type="hidden" id="leadId">
+            <div class="form-grid">
+                <label>Name<input id="name" required></label>
+                <label>Email<input id="email" type="email"></label>
+                <label>Phone<input id="phone" required></label>
+                <label>Location<input id="location"></label>
+                <label>Course<input id="course"></label>
+                <label>Counsellor<input id="counsellor"></label>
+                <label>Source<select id="source">
+                    <option>WEBSITE</option><option>WALK_IN</option><option>PHONE</option>
+                    <option>WHATSAPP</option><option>EDUCATION_FAIR</option><option>CAMPAIGN</option><option>OTHER</option>
+                </select></label>
+                <label>Status<select id="status">
+                    <option>NEW</option><option>CONTACTED</option><option>FOLLOW_UP</option>
+                    <option>INTERESTED</option><option>APPLICATION</option><option>CONVERTED</option>
+                    <option>NOT_INTERESTED</option><option>LOST</option>
+                </select></label>
+            </div>
+            <div class="modal-actions"><button type="button" class="secondary" onclick="closeLeadModal()">Cancel</button><button class="primary">Save Lead</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="modal hidden" id="followUpModal">
+    <div class="modal-box">
+        <div class="modal-head"><h2 id="followModalTitle">Add Follow-up</h2><button onclick="closeFollowUpModal()">×</button></div>
+        <form id="followUpForm">
+            <input type="hidden" id="followId">
+            <div class="form-grid">
+                <label>Lead ID<input id="followLeadId" type="number" required></label>
+                <label>Follow-up Date<input id="followDate" type="date" required></label>
+                <label>Action<select id="followAction"><option>CALL</option><option>WHATSAPP</option><option>EMAIL</option><option>MEETING</option><option>OTHER</option></select></label>
+                <label>Status<select id="followStatus"><option>PENDING</option><option>COMPLETED</option><option>CANCELLED</option></select></label>
+                <label class="full">Notes<textarea id="followNotes" rows="3"></textarea></label>
+            </div>
+            <div class="modal-actions"><button type="button" class="secondary" onclick="closeFollowUpModal()">Cancel</button><button class="primary">Save Follow-up</button></div>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
